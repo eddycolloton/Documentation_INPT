@@ -85,8 +85,57 @@ The output csv is run as an "argument" to start_output.sh like this:
 
 A template of the CSV is provided: `INPT/csv_templates/output_template.csv`
 
-When start_input.sh completes, it outputs an input.csv that documents the information gathered during the input process. This completely filled out input.csv file can be provided to start_output.sh to resume processing an artwork, or run additional output options.
+When start_input.sh completes, it outputs an input.csv that documents the information gathered during the input process. This filled out input.csv file can be provided to start_output.sh to resume processing an artwork, or run additional output options.
 Similarly, both an input.csv and an output.csv can be provided to start_input.sh to run an "end-to-end" process without any manual intervention. 
+
+# Usage
+
+screen recordings of using INPT
+
+## Start Input  
+
+./start_input [options] [optional input.csv] [optional output.csv]
+
+Options:
+--typos, -t
+                  Confirm manually input text
+
+#### input.csv
+
+All of the information necessary to run INPT can be provided via a CSV. An example of the input csv is in `INPT/csv_templates/`
+The input.csv contains 2 columns: metadata fields, and metadata values. start_input.sh can be run with none of the metadata values, or all of them.
+Metadata values added to the 2nd column should be enclosed in "double quotes", especially if they contain spaces or commas. 
+Directory paths can be in either escaped paths (like this: Lastname\,\ Firstname/time-based\ media/2024.004_Sometitle) or regular file paths (like this: Lastname, Firstname/time-based media/2024.004_Sometitle)
+It is recommended to run start_input with an input.csv that contains at least the values that rarely change, such as "Path Artwork Files parent directory" or "Path to the Time-based Media Artworks directory on the TBMA DroBo."
+When start_input.sh completes, it outputs an input.csv that documents the information gathered during the input process. Some of the metadata fields are intended only for this purpose. 
+
+Here are the metadata fields listed in column 1 of input.csv:
+- Artist's First Name
+  - First name of the artist as it appears in the Artwork File (or will appear in new Artwork File)
+- Artist's Last Name
+  - Last name of the artist as it appears in the Artwork File (or will appear in new Artwork File)
+- Artwork Title
+  - Titles containing spaces or special characters (,.*!) should be in double quotes ""
+- Accession Number
+  - Accession number of artwork. For artwork's without an existing Artwork File, use YYYY.### format, for works with an existing Artwork File, use existing accession format (such as YY.##).
+- Path to Artwork File on T: Drive
+  - The path to the artwork file often can be inferred from artist's name or the accession number, but can be read from the input.csv as well. 
+- Staging Directory on DroBo
+  - The path to the Staging Directory also often can be inferred from artist's name or the accession number, or can be read from the input.csv.
+- Path to hard drive
+  - The path to the volume or directory that stores the media to be processed (typically an external hard drive)
+- Path to Technical Info_Specs directory
+  - This field is intended to be filled out at the completion of the start_input.sh process
+- Path to Technical Info_Specs/Sidecars directory
+  - This field is intended to be filled out at the completion of the start_input.sh process
+- Path to Condition_Tmt Reports directory
+  - This field is intended to be filled out at the completion of the start_input.sh process
+- Path Artwork Files parent directory
+  - The path to the directory that stores all of the artwork files on the T: Drive, currently: "/Volumes/Shared/departments/CONSERVATION/ARTWORK FILES". 
+  - It is recommended that this metadata value stay "fixed" in the template and used in most cases. 
+- Path to the Time-based Media Artworks directory on the TBMA DroBo
+  - The path to the "Time-based Media Artworks" directory on the DroBo that stores all of the TBM media staged prior to ingest into SI DAMS.
+  - It is recommended that this metadata value stay "fixed" in the template and used in most cases. 
 
 ## Header 2
 
