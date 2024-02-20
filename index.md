@@ -35,7 +35,7 @@ In order to name and organize artwork metadata according to HMSG's conventions, 
 *   Path Artwork Files parent directory
 *   Path to the Time-based Media Artworks directory on the TBMA DroBo
 
-Any of this data can be provided before running the script via the input.csv. The CSV can contain as much or as little data as desired.
+Any of this data can be provided before running start_input.sh via the input.csv. The CSV can contain as much or as little data as desired.
 
 | metadata field      | value        |
 |:--------------------|:-------------|
@@ -97,16 +97,20 @@ screen recordings of using INPT
 ./start_input [options] [optional input.csv] [optional output.csv]
 
 Options:
+--help, -h
+	Display this text.
+--stop, -s
+	Stop process after start_input.sh, do not proceed to start_output.sh
 --typos, -t
-                  Confirm manually input text
+	Confirm manually input text
 
 #### input.csv
 
-All of the information necessary to run INPT can be provided via a CSV. An example of the input csv is in `INPT/csv_templates/`
+All of the information necessary to run INPT can be provided via a CSV. An example of the input.csv is in `INPT/csv_templates/`
 The input.csv contains 2 columns: metadata fields, and metadata values. start_input.sh can be run with none of the metadata values, or all of them.
 Metadata values added to the 2nd column should be enclosed in "double quotes", especially if they contain spaces or commas. 
 Directory paths can be in either escaped paths (like this: Lastname\,\ Firstname/time-based\ media/2024.004_Sometitle) or regular file paths (like this: Lastname, Firstname/time-based media/2024.004_Sometitle)
-It is recommended to run start_input with an input.csv that contains at least the values that rarely change, such as "Path Artwork Files parent directory" or "Path to the Time-based Media Artworks directory on the TBMA DroBo."
+It is recommended to run start_input.sh with an input.csv that contains at least the values that rarely change, such as "Path Artwork Files parent directory" or "Path to the Time-based Media Artworks directory on the TBMA DroBo."
 When start_input.sh completes, it outputs an input.csv that documents the information gathered during the input process. Some of the metadata fields are intended only for this purpose. 
 
 Here are the metadata fields listed in column 1 of input.csv:
@@ -136,6 +140,85 @@ Here are the metadata fields listed in column 1 of input.csv:
 - Path to the Time-based Media Artworks directory on the TBMA DroBo
   - The path to the "Time-based Media Artworks" directory on the DroBo that stores all of the TBM media staged prior to ingest into SI DAMS.
   - It is recommended that this metadata value stay "fixed" in the template and used in most cases. 
+
+#### Options
+
+typo check
+stop
+help
+
+
+#### Prompts
+
+Any information not provided in the input.csv, that cannot be inferred from contextual information, will be manually typed in to terminal. 
+The script will prompt the user for these necessary inputs. 
+If you plan to manually enter information it is recommended that you run the script with the -t or --typos option, like this:
+```
+./start_input --typos 
+```
+##### Artist's Name
+When start_.input.sh is run without any input.csv you will first be prompted:
+- Input artist's first name
+- Input artist's last name
+  - start_input.sh will search the artwork files for a directory that has the artist's name
+
+Once the artist's name has been manually input, if the artwork file exists, the path to the artwork file, as well as the accession number of the artwork, will be inferred by start_input.sh.
+When inputs are found by start_input.sh they are printed to the terminal in magenta. 
+
+##### Path to the artwork file
+If the artwork file is not found or does not exists, you will be prompted:
+- Enter a number to set the path to the Artwork File on the T:\ drive
+  - Input path
+    - If the artwork file does exists, but was not found, choose this option
+  - Create Artwork File
+    - If the artwork file does not exist, choose this option
+    - In order to create the artwork file, you will be prompted to manually input both tha accession number and title of the artwork 
+
+##### Path to the staging directory
+Like with the artwork files, if the staging directory on the TBMA DroBo already exists, start_input.sh will infer those inputs.
+Otherwise, you will prompted to either input the path or create the staging directory, just as with the artwork folder. 
+- Enter a number to set the path to the staging directory on the TBMA DroBo
+  - Input path
+    -  If the staging directory does exists, but was not found, choose this option
+  - Create Staging Directory
+    - If the staging directory does not exist, choose this option
+    - If the accession number and artist's name are known (likely by this prompt), no further information will be manually input
+
+##### Path to the volume
+Finally you will be prompted to input the path to the "Volume" or the hard drive that contains files to be processed.
+Mounted volumes are searched for the artist's last name and, if known, the title. Any matches are presented as options for selection, otherwise the prompt must be entered manually. 
+
+##### Path to the output directories
+With this information the path to the directories in the artwork files where outputs (the "Technical Info_Specs" directory or the "Condition_Tmt Reports" directory) will be written can likely be inferred. 
+If the artwork file does not match the expected structure you will be prompted to input the parent directory (the directory directly above) where you want either the "Technical Info_Specs" directory or the "Condition_Tmt Reports" directory of the artwork file.
+- Select a directory to create the Condition_Tmt Reports (or Technical Info_Specs) directory, or choose to quit
+  - /path/to/artwork file/
+    - Create either the Condition_Tmt Reports or the Technical Info_Specs directory directly below the artwork file
+  - Enter path to parent directory
+    - Manually input the path to the parent directory of either the Condition_Tmt Reports or the Technical Info_Specs directory. Output directory will be made inside that directory. 
+  - Quit
+
+##### Declared variables 
+
+##### Logs
+
+###### Known Paths
+
+If the artwork files are not in the expected location, or not connected to the computer, a cow will appear and prompt you for the path, like this:
+ ______________________________ 
+/ Please input the path to the \
+| ARTWORK FILES directory from |
+| the T:\ drive. Feel free to  |
+| drag and drop the directory  |
+\ into terminal:               /
+ ------------------------------ 
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+Follow this prompt to provide the path to the directory that holds all of the artwork files. At the time fo writing the path was: /Volumes/hmsg/DEPARTMENTS/CONSERVATION/ARTWORK FILES/
 
 ## Header 2
 
