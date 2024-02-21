@@ -101,7 +101,7 @@ Options:
 	Display this text.
 --stop, -s
 	Stop process after start_input.sh, do not proceed to start_output.sh
---typos, -t
+--typo, -t
 	Confirm manually input text
 
 #### input.csv
@@ -143,10 +143,51 @@ Here are the metadata fields listed in column 1 of input.csv:
 
 #### Options
 
-typo check
-stop
-help
+start_input has multiple options that are used to pass parameters to a program. 
+Each option (sometimes called 'switches' or 'flags') can either be called with a single dash ('-') and one letter, or two dashes and a word.
 
+-t, --typo
+With the typo check on, after every prompt for manual input, a second prompt will give the option to "go back a step" if the input was incorrect.  
+
+```
+2024-02-20 - 15.50.17 - The title manually input: Untitled
+ ________________________________________ 
+/ Just checking for typos - Is the title \
+\ entered correctly?                     /
+ ---------------------------------------- 
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+1) yes
+2) no, go back a step
+```
+
+-s, --stop
+The'--stop' option prevents start_output.sh from starting automatically after start_input.sh. 
+The output of this process will be an input.csv with every metadata field filled out, stored in the artwork file.
+Use the stop option if you are not ready to decide which files will be moved to the staging directory and/or which tools will be run on those files. 
+You can resume the process by running start_output.sh with the completed input.csv like this:
+```
+./start_output.sh input.csv
+``` 
+
+-h, --help
+Display basic script usage:
+```
+INPT is a bash scripting project created for TBMA processing at HMSG.
+
+./start_input [options] [optional input.csv] [optional output.csv]
+
+Options:
+--help, -h
+	Display this text.
+--stop, -s
+	Stop process after start_input.sh, do not proceed to start_output.sh
+--typos, -t
+	Confirm manually input text
+```
 
 #### Prompts
 
