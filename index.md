@@ -104,7 +104,7 @@ Options:
 --typo, -t
 	Confirm manually input text
 
-#### input.csv
+### input.csv
 
 All of the information necessary to run INPT can be provided via a CSV. An example of the input.csv is in `INPT/csv_templates/`
 The input.csv contains 2 columns: metadata fields, and metadata values. start_input.sh can be run with none of the metadata values, or all of them.
@@ -141,7 +141,7 @@ Here are the metadata fields listed in column 1 of input.csv:
   - The path to the "Time-based Media Artworks" directory on the DroBo that stores all of the TBM media staged prior to ingest into SI DAMS.
   - It is recommended that this metadata value stay "fixed" in the template and used in most cases. 
 
-#### Options
+### Options
 
 start_input has multiple options that are used to pass parameters to a program. 
 Each option (sometimes called 'switches' or 'flags') can either be called with a single dash ('-') and one letter, or two dashes and a word.
@@ -189,7 +189,7 @@ Options:
 	Confirm manually input text
 ```
 
-#### Prompts
+### Prompts
 
 Any information not provided in the input.csv, that cannot be inferred from contextual information, will be manually typed in to terminal. 
 The script will prompt the user for these necessary inputs. 
@@ -203,7 +203,7 @@ When start_.input.sh is run without any input.csv you will first be prompted:
 - Input artist's last name
   - start_input.sh will search the artwork files for a directory that has the artist's name
 
-Once the artist's name has been manually input, if the artwork file exists, the path to the artwork file, as well as the accession number of the artwork, will be inferred by start_input.sh.
+Once the artist's name has been manually input, if the artwork file exists, the path to the artwork file, as well as the accession number of the artwork, will be inferred by start_input.sh.  
 When inputs are found by start_input.sh they are printed to the terminal in magenta. 
 
 ##### Path to the artwork file
@@ -241,11 +241,16 @@ If the artwork file does not match the expected structure you will be prompted t
 
 ##### Declared variables 
 
-##### Logs
+##### Known Paths
 
-###### Known Paths
+start_input.sh assumes that the script is being run in the HMSG media lab. The default directory paths to certain "locations" are assumed, and you will only be prompted to enter the paths if they are not found at the expected path.
 
-If the artwork files are not in the expected location, or not connected to the computer, a cow will appear and prompt you for the path, like this:
+The 2 assumed known paths are:
+* The artwork files parent directory on the shared T:\ drive
+* The "Time-based Media Artworks" directory on the TBMA DroBo
+
+If either the artwork files directory or time-based media artworks directory are not in the expected location, or not connected to the computer, you will be prompted for the path, like this:
+```
  ______________________________ 
 / Please input the path to the \
 | ARTWORK FILES directory from |
@@ -258,8 +263,95 @@ If the artwork files are not in the expected location, or not connected to the c
             (__)\       )\/\
                 ||----w |
                 ||     ||
+```
+Follow this prompt to provide the path to the directory.
+At the time of writing the path to the artwork file was: `/Volumes/hmsg/DEPARTMENTS/CONSERVATION/ARTWORK FILES/`
+At the time of writing the path to the time-based media artworks directory on the DroBo was: `/Volumes/TBMA DroBo/Time-based Media Artworks/`
 
-Follow this prompt to provide the path to the directory that holds all of the artwork files. At the time fo writing the path was: /Volumes/hmsg/DEPARTMENTS/CONSERVATION/ARTWORK FILES/
+### Logs
+
+As soon as `./start_input.sh` is run a log is created in the `/INPT/logs` directory using the following naming convention:
+`YYYY-MM-DD-HH.MM.SS_INPT.log`
+
+The log contains all information collected by start_input.sh and all actions run by start_output.sh. Once start_output.sh is complete, the log is copied to the Technical Info_Specs directory in the artwork file and renamed:
+`Artist Last Name_Accession Number_YYYY-MM-DD-HH.MM.SS_INPT.log`
+
+The log documents the actions of start_input.sh and start_output.sh. It is the best place to look when troubleshooting unexpected behavior or results.
+
+Below is a sample log:
+```
+====== Script started at 2024-02-19 - 14.53.09 ======
+2024-02-19 - 14.53.10 - Reading CSV file: input_template.csv
+2024-02-19 - 14.53.10 - Input CSV file detected: /Users/eddycolloton/git/INPT/csv_templates/input_template.csv
+2024-02-19 - 14.53.10 - Reading variables from input csv: /Users/eddycolloton/git/INPT/csv_templates/input_template.csv
+2024-02-19 - 14.53.10 - Successfully read variables from /Users/eddycolloton/git/INPT/csv_templates/input_template.csv
+2024-02-19 - 14.53.19 - Artist name manually input: Tess McTest
+2024-02-19 - 14.53.19 - No path to the artwork file found in input csv
+2024-02-19 - 14.53.19 - The artwork file is /Users/eddycolloton/Documents/hmsg_directories/artwork_folders/McTest, Tess
+2024-02-19 - 14.53.19 - The accession number is 1999.066 found in the artwork folder /Users/eddycolloton/Documents/hmsg_directories/artwork_folders/McTest, Tess/time-based media/1999.066_Untitled
+2024-02-19 - 14.53.20 - No path to Staging Directory found in input csv
+2024-02-19 - 14.53.30 - Path to the staging directory: /Users/eddycolloton/Documents/hmsg_directories/tbma_drobo/1999-066_McTest
+2024-02-19 - 14.53.31 - The path to the volume from CSV: /Volumes/Artwork
+2024-02-19 - 14.53.31 - No path to the Technical Info and Specs directory found in input csv
+2024-02-19 - 14.53.31 - Path to the Technical Info_Specs directory: /Users/eddycolloton/Documents/hmsg_directories/artwork_folders/McTest, Tess/time-based media/1999.066_Untitled/Technical Info_Specs
+2024-02-19 - 14.53.31 - Metadata output will be written to the appendix.txt file in /Users/eddycolloton/Documents/hmsg_directories/artwork_folders/McTest, Tess/time-based media/1999.066_Untitled/Technical Info_Specs
+2024-02-19 - 14.53.31 - No path to the Condition_Tmt Reports directory found in input csv
+2024-02-19 - 14.53.31 - Path to the Condition_Tmt Reports directory: /Users/eddycolloton/Documents/hmsg_directories/artwork_folders/McTest, Tess/time-based media/1999.066_Untitled/Condition_Tmt Reports
+2024-02-19 - 14.53.31 - Metadata output will be written to the appendix.txt file in /Users/eddycolloton/Documents/hmsg_directories/artwork_folders/McTest, Tess/time-based media/1999.066_Untitled/Condition_Tmt Reports
+2024-02-19 - 14.53.31 - start_input.sh complete:
+----------------------->The artist name is Tess McTest
+----------------------->The title of the work is 
+----------------------->The accession number is 1999.066
+----------------------->The artwork folder is /Users/eddycolloton/Documents/hmsg_directories/artwork_folders/McTest, Tess
+----------------------->The staging directory is /Users/eddycolloton/Documents/hmsg_directories/tbma_drobo/1999-066_McTest
+----------------------->The volume path is /Volumes/Artwork
+2024-02-19 - 14.53.31 - Declared variables have been written to /Users/eddycolloton/Documents/hmsg_directories/artwork_folders/McTest, Tess/time-based media/1999.066_Untitled/Technical Info_Specs/McTest_1999.066_2024-02-19-14.53.31.csv
+2024-02-19 - 14.53.31 - Comparing McTest_1999.066_2024-02-19-14.53.31.csv with McTest_1999.066_2024-02-19-14.13.13.csv
+2024-02-19 - 14.53.31 - Differences in McTest_1999.066_2024-02-19-14.13.13.csv CSV found
+2024-02-19 - 14.54.27 - Moving old CSV file: /Users/eddycolloton/Documents/hmsg_directories/artwork_folders/McTest, Tess/time-based media/1999.066_Untitled/Technical Info_Specs/McTest_1999.066_2024-02-19-14.13.13.csv
+2024-02-19 - 14.54.27 - Created old_CSVs directory and moved pre-existing CSV file
+2024-02-19 - 14.54.27 - start_input.sh complete! Beginning start_output.sh
+2024-02-19 - 14.54.42 - The selected files are: /Volumes/Artwork/instructions.pdf
+
+2024-02-19 - 14.54.54 ******** generating md5 checksums on selected files ******** 
+md5deep will be run on /Volumes/Artwork
+2024-02-19 - 14.54.54 ******** md5 checksum manifest from /Volumes/Artwork completed ******** 
+
+		md5deep Results:
+		copied to /Users/eddycolloton/Documents/hmsg_directories/tbma_drobo/1999-066_McTest and 
+		/Users/eddycolloton/Documents/hmsg_directories/artwork_folders/McTest, Tess/time-based media/1999.066_Untitled/Condition_Tmt Reports/1999.066_appendix.txt
+		===================> Total Execution Time: 0 m 0 s
+
+2024-02-19 - 14.54.54 ******** copying files started ******** 
+	copying individual files from the volume
+
+	list of files copied below:
+	/Volumes/Artwork/instructions.pdf
+
+2024-02-19 - 14.54.54 ******** file copying and md5 checksum manifest from /Users/eddycolloton/Documents/hmsg_directories/tbma_drobo/1999-066_McTest completed ******** 
+
+		rsync Results:
+		manifest copied to /Users/eddycolloton/Documents/hmsg_directories/tbma_drobo/1999-066_McTest and 
+		/Users/eddycolloton/Documents/hmsg_directories/artwork_folders/McTest, Tess/time-based media/1999.066_Untitled/Condition_Tmt Reports/1999.066_appendix.txt 
+ rsync logs in /Users/eddycolloton/Documents/hmsg_directories/artwork_folders/McTest, Tess/time-based media/1999.066_Untitled/Technical Info_Specs
+		===================> Total Execution Time: 0 m 0 s
+2024-02-19 - 14.54.54 ******** checksum manifests match ******** 
+
+		===================> Total Execution Time: 0 m 0 s
+2024-02-19 - 14.54.54 - sf started! siegfried will be run on /Users/eddycolloton/Documents/hmsg_directories/tbma_drobo/1999-066_McTest
+2024-02-19 - 14.54.54 - sf run on instructions.pdf
+2024-02-19 - 14.54.54 - sf run on instructions.pdf
+2024-02-19 - 14.54.54 - sf run on smpte_bars_prores_ch1.mov
+2024-02-19 - 14.54.54 - sf run on smpte_bars_prores_ch3.mov
+2024-02-19 - 14.54.55 - sf run on smpte_bars_prores_ch2.mov
+2024-02-19 - 14.54.55 - sf run on smpte_bars_prores_ch2.mov.qctools.mkv
+2024-02-19 - 14.54.55 - sf run on smpte_bars_prores_ch1.mov
+2024-02-19 - 14.54.55 - sf run on smpte_bars_prores_ch2.mov
+2024-02-19 - 14.54.55 - sf run on smpte_bars_prores_ch1.mov.qctools.mkv
+2024-02-19 - 14.54.55 - ===================> siegfried complete! Total Execution Time: 0 m 1 s
+2024-02-19 - 14.54.55 - siegfried output written to 1999.066_appendix.txt and saved as a sidecar file
+2024-02-19 - 14.54.55 - Created old_logs directory and moved pre-existing .log files
+```
 
 ## Header 2
 
