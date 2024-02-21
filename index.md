@@ -5,7 +5,23 @@ layout: default
 INPT is a bash scripting project created for TBMA processing at HMSG. 
 
 INPT takes media files as input, typically from an external hard drive, and outputs metadata files according to the HMSG directory structure and naming conventions.
+* * *
+[Introduciton](#introduction)
 
+[HMSG Workflow](#hmsg-workflow)
+
+[INPUTS](#inputs)
+
+[OUTPUTS](#outputs)
+
+[Usage: Start Input](#usage-start-input)
+
+[input.csv](#inputcsv)
+
+[Options](#options)
+
+[Prompts](#prompts)
+* * *
 # Introduction
 
 ### HMSG Workflow
@@ -44,10 +60,8 @@ Any of this data can be provided before running start_input.sh via the input.csv
 | Artwork Title       | Oo Fifi...   |
 | Accession Number    | 03.9         |
 
-The input csv is run as an "argument" to start_input.sh like this:
-```
-./start_input.sh input.csv
-```
+The input csv is run as an "argument" to start_input.sh like this:   
+`./start_input.sh input.csv`
 
 A template of the CSV is provided: `INPT/csv_templates/input_template.csv`
 
@@ -78,22 +92,19 @@ A "1" in the 2nd column indicates the option has been selected, a "0" indicates 
 | Run all tools                             | 1            |
 | Run tree on volume                        | 0            |
 
-The output csv is run as an "argument" to start_output.sh like this:
-```
-./start_output.sh output.csv
-```
+The output csv is run as an "argument" to start_output.sh like this:   
+`./start_output.sh output.csv`
 
 A template of the CSV is provided: `INPT/csv_templates/output_template.csv`
 
 When start_input.sh completes, it outputs an input.csv that documents the information gathered during the input process. This filled out input.csv file can be provided to start_output.sh to resume processing an artwork, or run additional output options.
 Similarly, both an input.csv and an output.csv can be provided to start_input.sh to run an "end-to-end" process without any manual intervention. 
 
-# Usage
+# Usage: Start Input  
 
 screen recordings of using INPT
 
-## Start Input  
-
+```
 ./start_input [options] [optional input.csv] [optional output.csv]
 
 Options:
@@ -103,50 +114,52 @@ Options:
 	Stop process after start_input.sh, do not proceed to start_output.sh
 --typo, -t
 	Confirm manually input text
-
+```
 ### input.csv
 
-All of the information necessary to run INPT can be provided via a CSV. An example of the input.csv is in `INPT/csv_templates/`
-The input.csv contains 2 columns: metadata fields, and metadata values. start_input.sh can be run with none of the metadata values, or all of them.
-Metadata values added to the 2nd column should be enclosed in "double quotes", especially if they contain spaces or commas. 
-Directory paths can be in either escaped paths (like this: Lastname\,\ Firstname/time-based\ media/2024.004_Sometitle) or regular file paths (like this: Lastname, Firstname/time-based media/2024.004_Sometitle)
-It is recommended to run start_input.sh with an input.csv that contains at least the values that rarely change, such as "Path Artwork Files parent directory" or "Path to the Time-based Media Artworks directory on the TBMA DroBo."
+All of the information necessary to run INPT can be provided via a CSV. An example of the input.csv is in `INPT/csv_templates/`  
+The input.csv contains 2 columns: metadata fields, and metadata values. start_input.sh can be run with none of the metadata values, or all of them.  
+Metadata values added to the 2nd column should be enclosed in "double quotes", especially if they contain spaces or commas.   
+Directory paths can be in either escaped paths (like this: Lastname\,\ Firstname/time-based\ media/2024.004_Sometitle) or regular file paths (like this: Lastname, Firstname/time-based media/2024.004_Sometitle)  
+The "Path Artwork Files parent directory" and "Path to the Time-based Media Artworks directory on the TBMA DroBo" have default values for use at the HMSG media lab. Default values are assumed unless they are missing, or supersede by the input.csv.  
 When start_input.sh completes, it outputs an input.csv that documents the information gathered during the input process. Some of the metadata fields are intended only for this purpose. 
 
 Here are the metadata fields listed in column 1 of input.csv:
-- Artist's First Name
-  - First name of the artist as it appears in the Artwork File (or will appear in new Artwork File)
-- Artist's Last Name
-  - Last name of the artist as it appears in the Artwork File (or will appear in new Artwork File)
-- Artwork Title
-  - Titles containing spaces or special characters (,.*!) should be in double quotes ""
-- Accession Number
-  - Accession number of artwork. For artwork's without an existing Artwork File, use YYYY.### format, for works with an existing Artwork File, use existing accession format (such as YY.##).
-- Path to Artwork File on T: Drive
-  - The path to the artwork file often can be inferred from artist's name or the accession number, but can be read from the input.csv as well. 
-- Staging Directory on DroBo
-  - The path to the Staging Directory also often can be inferred from artist's name or the accession number, or can be read from the input.csv.
-- Path to hard drive
-  - The path to the volume or directory that stores the media to be processed (typically an external hard drive)
-- Path to Technical Info_Specs directory
-  - This field is intended to be filled out at the completion of the start_input.sh process
-- Path to Technical Info_Specs/Sidecars directory
-  - This field is intended to be filled out at the completion of the start_input.sh process
-- Path to Condition_Tmt Reports directory
-  - This field is intended to be filled out at the completion of the start_input.sh process
-- Path Artwork Files parent directory
-  - The path to the directory that stores all of the artwork files on the T: Drive, currently: "/Volumes/Shared/departments/CONSERVATION/ARTWORK FILES". 
-  - It is recommended that this metadata value stay "fixed" in the template and used in most cases. 
-- Path to the Time-based Media Artworks directory on the TBMA DroBo
-  - The path to the "Time-based Media Artworks" directory on the DroBo that stores all of the TBM media staged prior to ingest into SI DAMS.
-  - It is recommended that this metadata value stay "fixed" in the template and used in most cases. 
+<dl>
+<dt>Artist's First Name</dt>
+<dd>First name of the artist as it appears in the Artwork File (or will appear in new Artwork File)</dd>
+<dt>Artist's Last Name</dt>
+<dd>Last name of the artist as it appears in the Artwork File (or will appear in new Artwork File)</dd>
+<dt>Artwork Title</dt>
+<dd>Titles containing spaces or special characters (,.*!) should be in double quotes ""</dd>
+<dt>Accession Number</dt>
+<dd>Accession number of artwork. For artwork's without an existing Artwork File, use YYYY.### format, for works with an existing Artwork File, use existing accession format (such as YY.##).</dd>
+<dt>Path to Artwork File on T: Drive</dt>
+<dd>The path to the artwork file often can be inferred from artist's name or the accession number, but can be read from the input.csv as well.</dd>
+<dt>Staging Directory on DroBo</dt>
+<dd>The path to the Staging Directory also often can be inferred from artist's name or the accession number, or can be read from the input.csv.</dd>
+<dt>Path to hard drive</dt>
+<dd>The path to the volume or directory that stores the media to be processed (typically an external hard drive)</dd>
+<dt>Path to Technical Info_Specs directory</dt>
+<dd>This field is intended to be filled out at the completion of the start_input.sh process</dd>
+<dt>Path to Technical Info_Specs/Sidecars directory</dt>
+<dd>This field is intended to be filled out at the completion of the start_input.sh process</dd>
+<dt>Path to Condition_Tmt Reports directory</dt>
+<dd>This field is intended to be filled out at the completion of the start_input.sh process</dd>
+<dt>Path Artwork Files parent directory</dt>
+<dd>The path to the directory that stores all of the artwork files on the T: Drive, currently: "/Volumes/Shared/departments/CONSERVATION/ARTWORK FILES".</dd>
+<dd>It is recommended that this metadata value stay "fixed" in the template</dd>
+<dt>Path to the Time-based Media Artworks directory on the TBMA DroBo</dt>
+<dd>The path to the "Time-based Media Artworks" directory on the DroBo that stores all of the TBM media staged prior to ingest into SI DAMS.</dd>
+<dd>It is recommended that this metadata value stay "fixed" in the template.</dd>
+</dl>
 
 ### Options
 
 start_input has multiple options that are used to pass parameters to a program. 
 Each option (sometimes called 'switches' or 'flags') can either be called with a single dash ('-') and one letter, or two dashes and a word.
 
--t, --typo
+`-t, --typo`  
 With the typo check on, after every prompt for manual input, a second prompt will give the option to "go back a step" if the input was incorrect.  
 
 ```
@@ -164,7 +177,7 @@ With the typo check on, after every prompt for manual input, a second prompt wil
 2) no, go back a step
 ```
 
--s, --stop
+`-s, --stop`  
 The'--stop' option prevents start_output.sh from starting automatically after start_input.sh. 
 The output of this process will be an input.csv with every metadata field filled out, stored in the artwork file.
 Use the stop option if you are not ready to decide which files will be moved to the staging directory and/or which tools will be run on those files. 
@@ -173,7 +186,7 @@ You can resume the process by running start_output.sh with the completed input.c
 ./start_output.sh input.csv
 ``` 
 
--h, --help
+`-h, --help`
 Display basic script usage:
 ```
 INPT is a bash scripting project created for TBMA processing at HMSG.
@@ -239,7 +252,11 @@ If the artwork file does not match the expected structure you will be prompted t
     - Manually input the path to the parent directory of either the Condition_Tmt Reports or the Technical Info_Specs directory. Output directory will be made inside that directory. 
   - Quit
 
-##### Declared variables 
+##### Declared variables
+
+When start_input.sh completes, it will have collected (or created) the aforementioned inputs listed in the INPUTS section of the introduction. These inputs are saved to an input.csv with each row filled out. This input.csv can be used to resume the start_output.sh process later. In the event of an error, the input.csv can simply be edited and then provided to start_output.sh to avoid re-running start_input.sh. 
+
+The variables are also recorded to the log file. The log file can be used as a troubleshooting tool if you encounter unexpected behavior or results.
 
 ##### Known Paths
 
