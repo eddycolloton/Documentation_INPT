@@ -6,21 +6,16 @@ INPT is a bash scripting project created for TBMA processing at HMSG.
 
 INPT takes media files as input, typically from an external hard drive, and outputs metadata files according to the HMSG directory structure and naming conventions.
 * * *
-[Introduciton](#introduction)
+## Contents
+- [Introduciton](#introduction)
+  - [HMSG Workflow](#hmsg-workflow)
+  - [INPUTS](#inputs)
+  - [OUTPUTS](#outputs)
+- [Usage: Start Input](#usage-start-input)
+  - [input.csv](#inputcsv)
+  - [Options](#options)
+  - [Prompts](#prompts)
 
-[HMSG Workflow](#hmsg-workflow)
-
-[INPUTS](#inputs)
-
-[OUTPUTS](#outputs)
-
-[Usage: Start Input](#usage-start-input)
-
-[input.csv](#inputcsv)
-
-[Options](#options)
-
-[Prompts](#prompts)
 * * *
 # Introduction
 
@@ -115,7 +110,7 @@ Options:
 --typo, -t
 	Confirm manually input text
 ```
-### input.csv
+## input.csv
 
 All of the information necessary to run INPT can be provided via a CSV. An example of the input.csv is in `INPT/csv_templates/`  
 The input.csv contains 2 columns: metadata fields, and metadata values. start_input.sh can be run with none of the metadata values, or all of them.  
@@ -154,7 +149,7 @@ Here are the metadata fields listed in column 1 of input.csv:
 <dd>It is recommended that this metadata value stay "fixed" in the template.</dd>
 </dl>
 
-### Options
+## Options
 
 start_input has multiple options that are used to pass parameters to a program. 
 Each option (sometimes called 'switches' or 'flags') can either be called with a single dash ('-') and one letter, or two dashes and a word.
@@ -202,7 +197,7 @@ Options:
 	Confirm manually input text
 ```
 
-### Prompts
+## Prompts
 
 Any information not provided in the input.csv, that cannot be inferred from contextual information, will be manually typed in to terminal. 
 The script will prompt the user for these necessary inputs. 
@@ -230,7 +225,7 @@ If the artwork file is not found or does not exists, you will be prompted:
 
 ##### Path to the staging directory
 Like with the artwork files, if the staging directory on the TBMA DroBo already exists, start_input.sh will infer those inputs.
-Otherwise, you will prompted to either input the path or create the staging directory, just as with the artwork folder. 
+Otherwise, you will prompted to either input the path or create the staging directory. 
 - Enter a number to set the path to the staging directory on the TBMA DroBo
   - Input path
     -  If the staging directory does exists, but was not found, choose this option
@@ -285,7 +280,43 @@ Follow this prompt to provide the path to the directory.
 At the time of writing the path to the artwork file was: `/Volumes/hmsg/DEPARTMENTS/CONSERVATION/ARTWORK FILES/`
 At the time of writing the path to the time-based media artworks directory on the DroBo was: `/Volumes/TBMA DroBo/Time-based Media Artworks/`
 
-### Logs
+# Usage: Start Output  
+```
+./start_output [optional input.csv] [optional output.csv]
+```
+
+## output.csv
+
+The selection of files and tools to be run by INPT can be provided via a CSV. An example of the output.csv is in `INPT/csv_templates/`  
+The output.csv contains 2 columns: an output option, and an output selection (0 or 1). start_output.sh can be run with none of the output options selected, or all of them.  
+Values added to the 2nd column should only be a "0" or a "1". The "1" indicates that the output option has been selected and "0' indicates the option will not be run.  
+Certain options override others, for example if 'Run all tools' is set to '1' than the individual tool selection is ignored.  
+
+Options left blank will result in a prompt when start_output.sh is run. 
+
+Here are the output options listed in column 1 of input.csv:
+<dl>
+<dt>Move all files to staging directory</dt>
+<dd>Move all files from the volume (excluding system files like .DS_Store) to the staging directory and confirm fixity</dd>
+<dt>Select files to move to staging directory</dt>
+<dd>Produces a prompt that asks you to choose specific directories or files from the volume to transfer to the staging directory</dd>
+<dt>Run all tools</dt>
+<dd>Run all metadata tools on files once they've been moved to the staging directory. If this is set to '1', the values of the individual tool options below will be ignored.</dd>
+<dt>Run tree on volume</dt>
+<dd>Assuming 'Run all tools' is '0' or blank, choose to run tree on the volume and output to sidecar text file with the filename: '[volume_name]_tree_output.txt'</dd>
+<dt>Run siegfried on files in staging directory</dt>
+<dd>Assuming 'Run all tools' is '0' or blank, choose to run siegfried on files in the staging directory, which is output to individual sidecar files with the filename: '[filename]_sf.txt'</dd>
+<dt>Run MediaInfo on video files in staging directory</dt>
+<dd>Assuming 'Run all tools' is '0' or blank, this will run 'MediaInfo -f' on only audio or video files in the staging directory, which is output to individual sidecar files with the filename: '[filename]_mediainfo.txt'</dd>
+<dt>Run Exiftool on media files in staging directory</dt>
+<dd>Assuming 'Run all tools' is '0' or blank, this will run exiftool on only image, audio or video files in the staging directory, which is output to individual sidecar files with the filename: '[filename]_exif.txt'</dd>
+<dt>Create framdemd5 output for video files in staging directory</dt>
+<dd>Assuming 'Run all tools' is '0' or blank, this will run an ffmpeg command on only audio or video files in the staging directory to create an md5 checksum per frame, which is output to individual sidecar files with the filename: '[filename]framemd5.txt'</dd>
+<dt>Create QCTools reports for video files in staging directory</dt>
+<dd>Assuming 'Run all tools' is '0' or blank, this will run QCTools on only audio or video files in the staging directory, which is output to QCTools report with the filename: '[filename].qctools.mkv'</dd>
+</dl>
+
+# Logs
 
 As soon as `./start_input.sh` is run a log is created in the `/INPT/logs` directory using the following naming convention:
 `YYYY-MM-DD-HH.MM.SS_INPT.log`
@@ -369,6 +400,16 @@ md5deep will be run on /Volumes/Artwork
 2024-02-19 - 14.54.55 - siegfried output written to 1999.066_appendix.txt and saved as a sidecar file
 2024-02-19 - 14.54.55 - Created old_logs directory and moved pre-existing .log files
 ```
+
+# Setup
+
+# Use Case 1
+
+# Use Case 2
+
+# Use Case 3
+
+# Code Structure
 
 ## Header 2
 
