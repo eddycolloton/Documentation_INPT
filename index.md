@@ -2,7 +2,7 @@
 layout: default
 ---
 
-INPT is a bash scripting project created for TBMA processing at HMSG. 
+##### INPT is a bash scripting project created for TBMA processing at HMSG. 
 
 INPT takes media files as input, typically from an external hard drive, and outputs metadata files according to the HMSG directory structure and naming conventions.
 * * *
@@ -14,7 +14,16 @@ INPT takes media files as input, typically from an external hard drive, and outp
 - [Usage: Start Input](#usage-start-input)
   - [input.csv](#inputcsv)
   - [Options](#options)
-  - [Prompts](#prompts)
+  - [Input Prompts](#input-prompts)
+- [Usage: Start Output](#usage-start-output)
+  - [output.csv](#outputcsv)
+  - [Output Prompts](#output-prompts)
+- [Logs](#logs)
+- [Setup](#setup)
+- [Use Case 1](#use-case-1)
+- [Use Case 2](#use-case-2)
+- [Use Case 3](#use-case-3)
+- [Code Structure](#code-structure)
 
 * * *
 # Introduction
@@ -174,12 +183,9 @@ With the typo check on, after every prompt for manual input, a second prompt wil
 
 `-s, --stop`  
 The'--stop' option prevents start_output.sh from starting automatically after start_input.sh. 
-The output of this process will be an input.csv with every metadata field filled out, stored in the artwork file.
-Use the stop option if you are not ready to decide which files will be moved to the staging directory and/or which tools will be run on those files. 
-You can resume the process by running start_output.sh with the completed input.csv like this:
-```
-./start_output.sh input.csv
-``` 
+The output of this process will be an input.csv with every metadata field filled out, stored in the artwork file.   
+Use the stop option if you are not ready to decide which files will be moved to the staging directory and/or which tools will be run on those files.    
+You can resume the process by running start_output.sh with the completed input.csv like this: `./start_output.sh input.csv` 
 
 `-h, --help`
 Display basic script usage:
@@ -197,14 +203,12 @@ Options:
 	Confirm manually input text
 ```
 
-## Prompts
+## Input Prompts
 
 Any information not provided in the input.csv, that cannot be inferred from contextual information, will be manually typed in to terminal. 
 The script will prompt the user for these necessary inputs. 
-If you plan to manually enter information it is recommended that you run the script with the -t or --typos option, like this:
-```
-./start_input --typos 
-```
+If you plan to manually enter information it is recommended that you run the script with the -t or --typo option, like this: `./start_input --typo`
+
 ##### Artist's Name
 When start_.input.sh is run without any input.csv you will first be prompted:
 - Input artist's first name
@@ -276,8 +280,8 @@ If either the artwork files directory or time-based media artworks directory are
                 ||----w |
                 ||     ||
 ```
-Follow this prompt to provide the path to the directory.
-At the time of writing the path to the artwork file was: `/Volumes/hmsg/DEPARTMENTS/CONSERVATION/ARTWORK FILES/`
+Follow this prompt to provide the path to the directory.   
+At the time of writing the path to the artwork file was: `/Volumes/hmsg/DEPARTMENTS/CONSERVATION/ARTWORK FILES/`   
 At the time of writing the path to the time-based media artworks directory on the DroBo was: `/Volumes/TBMA DroBo/Time-based Media Artworks/`
 
 # Usage: Start Output  
@@ -297,9 +301,9 @@ Options left blank will result in a prompt when start_output.sh is run.
 Here are the output options listed in column 1 of input.csv:
 <dl>
 <dt>Move all files to staging directory</dt>
-<dd>Move all files from the volume (excluding system files like .DS_Store) to the staging directory and confirm fixity</dd>
+<dd>Move all files from the volume (excluding system files like .DS_Store) to the staging directory and confirm fixity. If this is set to '1' than the value of the 'Select files to move to staging directory' will be ignored.</dd>
 <dt>Select files to move to staging directory</dt>
-<dd>Produces a prompt that asks you to choose specific directories or files from the volume to transfer to the staging directory</dd>
+<dd>If 'Move all files to staging directory' is set to '0' or is left blank, this option produces a prompt that asks you to choose specific directories or files from the volume to transfer to the staging directory and confirm fixity.</dd>
 <dt>Run all tools</dt>
 <dd>Run all metadata tools on files once they've been moved to the staging directory. If this is set to '1', the values of the individual tool options below will be ignored.</dd>
 <dt>Run tree on volume</dt>
@@ -315,6 +319,141 @@ Here are the output options listed in column 1 of input.csv:
 <dt>Create QCTools reports for video files in staging directory</dt>
 <dd>Assuming 'Run all tools' is '0' or blank, this will run QCTools on only audio or video files in the staging directory, which is output to QCTools report with the filename: '[filename].qctools.mkv'</dd>
 </dl>
+
+## Output Prompts
+
+Any options left blank in the output.csv, that are not overridden by other selected options, will be manually selected in terminal. 
+The script will prompt the user for these necessary selections. 
+Each new selection will give you the option to "go back a step" if necessary, so don't worry if you hit "1" when you meant to hit "2".
+
+##### Path to existing artwork file
+
+start_output.sh is intended to be run with an existing artwork file created by start_input.sh.   
+If an input.csv is not provided to start_output.sh you will be prompted to provide the path to an artwork file containing an input.csv.
+
+```
+If you would like to run start_output.sh on an artwork that has a completed input.csv, 
+type or drag and drop the path of the artwork file:
+```
+   
+If there is more than one input.csv in the artwork file, additional prompts will follow to determine which csv should be used:
+
+```
+More than one CSV found in Art File. Use most recent?
+1) Yes
+2) No, show all CSVs
+```
+
+##### Checksum manifest
+
+If the output.csv has 'Select files to move to staging directory' selected or left blank, then the artwork file will be searched for files with a '_manifest.md5' suffix.   
+If existing md5 checksum manifests are found, you will be notified via a prompt like this one: 
+```
+ _________________________________________ 
+/ Checksum manifest found in Artwork      \
+| File! Checksums from the following      |
+| files were found in                     |
+| /path/to/Technical                      |
+\ Info_Specs:                             /
+ ----------------------------------------- 
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+```
+Following the prompt will be a list of all files in any manifests found in the artwork file.   
+This prompt is intended to prevent files being transferred multiple times unintentionally.
+
+##### Select Files
+
+If the output.csv has 'Select files to move to staging directory' selected or left blank (and 'Move all files to staging directory' is not selected), you will be prompted to select how many files you want to move form the volume to the staging directory.
+```
+Copy all files from the volume to the staging directory?
+1) yes				 3) no, specific files
+2) no, only certain directories	 4) none
+```
+
+If you choose either 'no, specific files' or 'no, only certain directories' you will be presented with a list of either the files or directories on the volume.   
+You'll then be able to select each file/directory you want to transfer, one at a time, iteratively, until you've selected all of them. 
+
+```
+ _________________________________________ 
+/ Select individual files from the list   \
+| below, one at a time. Type the          |
+| corresponding number and press enter to |
+| select one. Repeat as necessary. Once   |
+| all the directories have been selected, |
+\ press enter again.                      /
+ ----------------------------------------- 
+        \   ^__^
+         \  (**)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+Avaliable options:
+  1 ) /Volumes/Artwork/instructions.pdf
+  2 ) /Volumes/Artwork/smpte_bars_prores_ch1.mov
+  3 ) /Volumes/Artwork/smpte_bars_prores_ch3.mov
+  4 ) /Volumes/Artwork/smpte_bars_prores_ch2.mov
+Check an option (again to uncheck, ENTER when done): 
+2
+Avaliable options:
+  1 ) /Volumes/Artwork/instructions.pdf
+  2+) /Volumes/Artwork/smpte_bars_prores_ch1.mov
+  3 ) /Volumes/Artwork/smpte_bars_prores_ch3.mov
+  4 ) /Volumes/Artwork/smpte_bars_prores_ch2.mov
+/Volumes/Artwork/smpte_bars_prores_ch1.mov was checked
+Check an option (again to uncheck, ENTER when done): 
+3
+Avaliable options:
+  1 ) /Volumes/Artwork/instructions.pdf
+  2+) /Volumes/Artwork/smpte_bars_prores_ch1.mov
+  3+) /Volumes/Artwork/smpte_bars_prores_ch3.mov
+  4 ) /Volumes/Artwork/smpte_bars_prores_ch2.mov
+/Volumes/Artwork/smpte_bars_prores_ch3.mov was checked
+Check an option (again to uncheck, ENTER when done):
+```
+
+Once a '+' is by each file/directory you wish to select, hit ENTER again to confirm your choices.
+
+##### Run All Tools
+
+If no output.csv is provided, you will be prompted to select which tools to run.   
+After each selection you will have a chance to 'go back a step' and change your selection in case of a mistake. If it is the last prompt, you will be asked to confirm your selection. 
+```
+Run metadata tools (tree, siegfried, MediaInfo, Exiftool, framemd5, and qctools) on files copied to [path to staging directory] (Choose a number 1-2)
+1) yes
+2) no
+#? 1
+
+Confirm you would like to run all metadata tools:
+1) yes
+2) no
+#? 
+```
+
+##### Run Individual Tools
+
+If you do not choose to run all tools, you will be prompted to choose which tools to run individually. After each selection you will have a chance to 'go back a step' and change your selection in case of a mistake. If it is the last prompt, you will be asked to confirm your selection. 
+```
+*************************************************
+This will be the final prompt, and applications will run after this response!
+Create QCTools reports for each of the video files in [staging directory] (Choose a number 1-2)
+*************************************************
+
+1) yes
+2) no
+3) go back a step
+#? 1
+
+Confirm you would like to create QCTools reports for each of the video files in [staging directory]:
+1) yes
+2) no
+```
+
+After the final prompt the script will run. Your selected files will be moved to the staging directory and their fixity will be verified. Then, all selected tools will run on the files in the staging directory. 
+* * *
 
 # Logs
 
@@ -402,6 +541,24 @@ md5deep will be run on /Volumes/Artwork
 ```
 
 # Setup
+
+Only on new machine:
+install homebrew
+
+brew install git
+
+Only for new install:
+git clone [inpt repo]
+
+cd INPT
+
+chmod +x dependency_check.sh
+
+./dependency_check.sh
+
+chmod -R +x INPT
+
+
 
 # Use Case 1
 

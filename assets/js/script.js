@@ -25,9 +25,8 @@ $(document).ready(function(){
     headings.push({"top":$(this).offset().top - 15,"text":$(this).text()});
   }
 
-  if($(".markdown-body h1").length > 1) $(".markdown-body h1").each(collectHeaders)
-  else if($(".markdown-body h2").length > 1) $(".markdown-body h2").each(collectHeaders)
-  else if($(".markdown-body h3").length > 1) $(".markdown-body h3").each(collectHeaders)
+  
+  $(".markdown-body h1, .markdown-body h2").each(collectHeaders);
 
   $(window).scroll(function(){
     if(headings.length==0) return true;

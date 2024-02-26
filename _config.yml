@@ -3,3 +3,6 @@ description: INgest and Processing Toolkit
 show_downloads: true
 google_analytics:
 theme: jekyll-theme-time-machine
+github:
+      zip_url: https://github.com/eddycolloton/INPT/archive/refs/heads/main.zip
+      repository_url: https://github.com/eddycolloton/INPT
