@@ -20,7 +20,7 @@ INPT takes media files as input, typically from an external hard drive, and outp
   - [Output Prompts](#output-prompts)
 - [Logs](#logs)
 - [Setup](#setup)
-- [Use Cases](#use-case-1)
+- [Use Cases](#use-cases)
   - [Use Case 1](#use-case-1)
   - [Use Case 2](#use-case-2)
   - [Use Case 3](#use-case-3)
@@ -590,7 +590,8 @@ You can now run INPT by navigating to the INPT scripts directory and running:
 At any time, you can update INPT by running
 `git fetch && git pull` from within the INPT repository directory
 
-# Use Case 1
+# Use Cases
+## Use Case 1
 
 A multi-channel video artwork is acquired by the museum. It is the first artwork by this artist that the Hirshhorn has acquired. The acquisition has been fully processed by the registrar, so the work is now in TMS and has an accession number. There is no conservation artwork file on the T:\ drive yet. 
 
