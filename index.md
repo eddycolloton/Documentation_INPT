@@ -20,9 +20,10 @@ INPT takes media files as input, typically from an external hard drive, and outp
   - [Output Prompts](#output-prompts)
 - [Logs](#logs)
 - [Setup](#setup)
-- [Use Case 1](#use-case-1)
-- [Use Case 2](#use-case-2)
-- [Use Case 3](#use-case-3)
+- [Use Cases](#use-case-1)
+  - [Use Case 1](#use-case-1)
+  - [Use Case 2](#use-case-2)
+  - [Use Case 3](#use-case-3)
 - [Code Structure](#code-structure)
 
 * * *
@@ -281,7 +282,7 @@ If either the artwork files directory or time-based media artworks directory are
                 ||     ||
 ```
 Follow this prompt to provide the path to the directory.   
-At the time of writing the path to the artwork file was: `/Volumes/hmsg/DEPARTMENTS/CONSERVATION/ARTWORK FILES/`   
+At the time of writing the path to the artwork file was: `/Volumes/Shared/departments/CONSERVATION/ARTWORK FILES`   
 At the time of writing the path to the time-based media artworks directory on the DroBo was: `/Volumes/TBMA DroBo/Time-based Media Artworks/`
 
 # Usage: Start Output  
@@ -540,33 +541,185 @@ md5deep will be run on /Volumes/Artwork
 2024-02-19 - 14.54.55 - Created old_logs directory and moved pre-existing .log files
 ```
 
+INPT uses the `copyit.py` python script originally created for the open source project: [IFIscripts](https://github.com/kieranjol/IFIscripts)
+
+The copyit.py script creates additional logs as well as all copyit.py created md5 manifests, which are stored within the repository directory.
+
+```
+INPT
+├── logs
+│   ├── copyit
+│   │   ├── copyit_logs
+│   │   └── manifests
+│   │       └── old_manifests
+│   └── samplelog.log
+├── sample_files
+└── tests
+```
+
 # Setup
 
-Only on new machine:
-install homebrew
+The initial setup for INPT requires the macOS package manager homebrew, and preferably the command line version control software git.    
+The INPT scripts can of course be simply downloaded directly from github instead of cloned from the command line.
 
-brew install git
+To install homebrew, follow the instructions on the homebrew website: https://brew.sh/
 
-Only for new install:
-git clone [inpt repo]
+With homebrew installed, if necessary, install git:   
+`brew install git`
 
-cd INPT
+Next, clone the INPT github repository:   
+`git clone https://github.com/eddycolloton/INPT.git`
 
-chmod +x dependency_check.sh
+Once cloned, navigate into the repository directory:   
+`cd INPT`
 
-./dependency_check.sh
+Make the file 'dependency_check.sh' executable with the chmod command, like this:    
+`chmod +x dependency_check.sh`
 
-chmod -R +x INPT
+Run the dependency check script:    
+`./dependency_check.sh`
 
+The dependency check script cycles through each command line tool used in INPT, and if the tool is not installed, dependency_check.sh will install it using homebrew.
 
+Once all dependencies are installed, make every file in the scripts subdirectory executable:   
+`chmod -R +x INPT`
+
+You can now run INPT by navigating to the INPT scripts directory and running:   
+`./start_input.sh`
+
+At any time, you can update INPT by running
+`git fetch && git pull` from within the INPT repository directory
 
 # Use Case 1
 
+A multi-channel video artwork is acquired by the museum. It is the first artwork by this artist that the Hirshhorn has acquired. The acquisition has been fully processed by the registrar, so the work is now in TMS and has an accession number. There is no conservation artwork file on the T:\ drive yet. 
+
+The artist provides an external hard drive containing only preservation and exhibition copies of their artwork as video files. The preservation copies are in one directory, the exhibition copies are in another. 
+
+Once the external hard drive is connected to the computer in the TBMA Lab via a read/write blocker, the conservator views the drive and its contents in Finder. The conservator verifies that the drive only contains the expected preservation and exhibition copies. Next, the conservator runs the start_input.sh script in terminal. When prompted, the conservator opts to create an artwork folder using the script. The conservator manually enters the artist’s first and last name, the artwork's accession number, and the artwork’s title. With this information, the script creates an Artwork Folder on the T:\ drive. 
+
+The conservator also opts to create a Staging Directory on the TBMA DroBo, where the video files will be stored prior to upload to the SI DAMS. The script uses the previously entered information, the artist’s name and the accession number, to automatically creates a Staging Directory on the TBMA DroBo, following the HMSG media conservation file naming conventions. 
+
+The conservator manually enters the path to the hard drive when prompted. For this drive, the volume path is simply:    
+“/Volumes/Untitled”
+
+With this information entered into the computer, the script will search the newly created artwork file on the T:\ drive and verify that the “Condition_Tmt Reports” directory and the “Technical Info_Specs” directory can be found. Metadata files will be out to these two locations, so it is important to verify that they can be found.
+
+The start_output.sh script will now prompt the conservator to decide whether to copy all of the files from the external hard drive to the staging directory on the TBMA DroBo, or only certain files or directories. Since the only media on the external drive are artist provided preservation and exhibition files, the conservator chooses to copy all of the files to the staging directory. The script saves this choice, but does not yet copy the files. Instead, it follows the first prompt with a series of follow up questions. 
+
+Next the script asks the conservator whether they would like to run a series of metadata tools (tree, siegfried, MediaInfo, Exiftool, framemd5, and qctools) on all of the files copied to the staging directory. Again, because the files are all artist provided preservation and exhibition copies, the conservator chooses to run all of the tools on these files. 
+
+This prompt notes that, because the conservator is selecting the “yes” option, this will be the final prompt. Once the conservator chooses the “yes” option, the script will first confirm begin to run the metadata tools. Because the conservator has chosen to run all of the metadata tools, this process will take some time (especially if the files are large).
+
+The script will begin by creating md5 checksums of the files on the hard drive. Next the files will be copied to the Staging Directory. Once there, md5 checksums will be created again. The checksums will be compared by the script in order to confirm that no loss or errors have occurred. 
+
+The file format identification tool siegfried will provide the PRONOM identification number, if applicable, for all of the files in the Staging Directory. 
+
+MediaInfo will run on all of the video files in the Staging Directory, and generate technical metadata describing each of the files individually. 
+
+Exiftool is scripted to only run on still image files, so in this example, it will not run on any of the files on the drive. 
+
+Ffmpeg will run on each of the video files to create a “frame md5” file, a text file which lists the md5 checksum of each of the rendered frames of the video file. This granular description of the files fixity can be used to determine how much a video file has been altered in the result of a checksum collision. 
+
+QCTools will run on each of the video files as well, creating a “sidecar” QCTools file for each of the video files. These files can then be viewed in the QCTools GUI. 
+
 # Use Case 2
+
+An artist with multiple works in the Hirshhorn’s collection has a new single-channel video artwork acquired. The artwork has been presented to the TBMA committee, and correspondence, and other information about the piece has already been added to the existing Artwork File. The new artwork is delivered to the museum on an external hard drive containing promotional still image files (not artwork), installation instructions, an Apple ProRes encoded exhibition copy, and a dpx sequence preservation copy. The contracting process is not complete, so the artwork does not yet have an accession number
+
+The external hard drive is connected to the computer in the TBMA Lab via a read/write blocker, and the conservator views the drive and its contents in Finder. The conservator verifies the drive’s contents, noting that the exhibition copy is not in a directory, and the preservation copy is in its own directory. 
+
+[ -- description of using input.csv --- maybe drop the no accession number discussion for this example? --- ]
+
+Next, the script attempts to identify the “Condition_Tmt Reports” directory and the “Technical Info_Specs” directory, but, because the Artwork File only stores preliminary information about the artwork, the directories do not match the expected structure. 
+
+```
+*************************************************
+ 
+The artwork file does not match expected directory structure. 
+Cannot find Condition_Tmt Reports directory 
+ See directories listed below 
+
+
+/Users/eddy/Desktop/McTest,\ Tess
+└── time-based\ media
+    └── 00.00_Untitled
+        ├── Acquisition\ and\ Registration
+        ├── Artist\ Interaction
+        ├── Photo-Video\ Documentation
+        ├── Research
+        │   └── Correspondence
+        └── Trash
+
+
+8 directories, 0 files
+ _____________________________________ 
+/ Select a directory to create the    \
+| Condition_Tmt Reports directory, or |
+\ choose to quit:                     /
+ ------------------------------------- 
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+1) /Users/eddy/Desktop/McTest, Tess  3) Quit
+2) Enter path to parent directory
+```
+
+As shown in the example above, the script produces a tree output of the Artwork File, showing the existing directories. Next, the script prompts the conservator to enter a path to an existing directory (option 2), or simply use the parent directory of the Artwork File (option 1). For expedience sake, the conservator chooses to use the parent directory of the artwork file, and plans to place the resulting metadata files in the correct directories later. 
+
+If the conservator had more time, they could choose to create a new directory to act as the “Condition_Tmt Report” directory, and then drag and drop the directory into terminal (or type it in using tab complete to avoid typos). 
+
+The Artwork File does not have a “Technical Info_Specs” directory either, so the conservator goes through the same process, once again selecting the parent directory.
+
+With the “Condition_Tmt Report” directory and the “Technical Info_Specs” directory now identified, the script will...
+
 
 # Use Case 3
 
+While transferring files from an artist provided hard drive, a conservator prioritizes transferring the highest quality copies provided, which are all stored in one directory. The files are fully processed with the HMSG_auto scripts and uploaded into DAMS. Later, the conservator decides to transfer the artist-provided exhibition copies off of the hard drive as well. They run ./make_vars.sh, and, when prompted, drag and drop the existing artwork folder in to terminal. The make_vars.sh script sources the staging directory location, volume name, and other relevant variables from the .varfile file. After selecting the option to move additional files from the volume to the staging directory, the move_files.sh script automatically runs. 
+The conservator selects the directory on the volume that contains the exhibition files from the list of directories provided in terminal by the move_files.sh script. The script copies the files to the staging directory. 
+The conservator is then prompted to decide whether to run metadata tools on all of the files in the staging directory. However, the high quality copies of the files are still in the staging directory from the original transfer. Because those high quality files are already in DAMS, the conservator opts to delete the high quality files in the staging directory, and then selects the option in terminal to run metadata tools. This transitions to the meta_file.sh script, which will provide a list of tools for the user to opt to run on the files in the staging directory. The result will be metadata describing the exhibition copies being added to the artwork folder, as well as stored in sidecars in the staging directory.
+
+
 # Code Structure
+
+```
+INPT
+├── INPT
+│   ├── input_functions
+│   │   ├── finddirs.sh
+│   │   ├── makecsv.sh
+│   │   └── makelog.sh
+│   ├── output_functions
+│   │   ├── move
+│   │   │   ├── copyit.py
+│   │   │   ├── movefiles.sh
+│   │   │   ├── runmovefiles.sh
+│   │   │   └── selectfiles.sh
+│   │   └── tools
+│   │       ├── runtools.sh
+│   │       ├── selecttools.sh
+│   │       └── tools.sh
+│   ├── start_input.sh
+│   └── start_output.sh
+├── README.md
+├── Roadmap.md
+├── acronym_brainstorming.txt
+├── csv_templates
+│   ├── input_template.csv
+│   └── output_template.csv
+├── dependency_check.sh
+├── logs
+│   ├── copyit
+│   │   ├── copyit_logs
+│   │   └── manifests
+│   │       └── old_manifests
+│   └── samplelog.log
+├── sample_files
+└── tests
+```
 
 ## Header 2
 
