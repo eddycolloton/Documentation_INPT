@@ -624,15 +624,70 @@ Ffmpeg will run on each of the video files to create a “frame md5” file, a t
 
 QCTools will run on each of the video files as well, creating a “sidecar” QCTools file for each of the video files. These files can then be viewed in the QCTools GUI. 
 
-# Use Case 2
+## Use Case 2
 
-An artist with multiple works in the Hirshhorn’s collection has a new single-channel video artwork acquired. The artwork has been presented to the TBMA committee, and correspondence, and other information about the piece has already been added to the existing Artwork File. The new artwork is delivered to the museum on an external hard drive containing promotional still image files (not artwork), installation instructions, an Apple ProRes encoded exhibition copy, and a dpx sequence preservation copy. The contracting process is not complete, so the artwork does not yet have an accession number
+An artist with multiple works in the Hirshhorn’s collection has a new single-channel video artwork acquired. The artwork has been presented to the TBMA committee, and correspondence, and other information about the piece has already been added to the existing artwork file. The new artwork is delivered to the museum on an external hard drive containing promotional still image files (not artwork), installation instructions, an Apple ProRes encoded exhibition copy, and a dpx sequence preservation copy. The contracting process is not complete, so the artwork does not yet have an accession number.
 
 The external hard drive is connected to the computer in the TBMA Lab via a read/write blocker, and the conservator views the drive and its contents in Finder. The conservator verifies the drive’s contents, noting that the exhibition copy is not in a directory, and the preservation copy is in its own directory. 
 
-[ -- description of using input.csv --- maybe drop the no accession number discussion for this example? --- ]
+The art conservator opens the input_template.csv file stored in `INPT/csv_templates/` 
 
-Next, the script attempts to identify the “Condition_Tmt Reports” directory and the “Technical Info_Specs” directory, but, because the Artwork File only stores preliminary information about the artwork, the directories do not match the expected structure. 
+The conservator enters some of the known information about the artwork:
+```
+Artist's First Name,
+Artist's Last Name,
+Artwork Title,
+Accession Number,"00.00"
+Path to Artwork File on T: Drive,"/Volumes/Shared/departments/CONSERVATION/ARTWORK FILES/McTest, Tess"
+Staging Directory on DroBo,
+Path to hard drive,"/Volumes/external_hard_drive"
+Path to Technical Info_Specs directory,
+Path to Technical Info_Specs/Sidecars directory,
+Path to Condition_Tmt Reports directory,
+Path Artwork Files parent directory,"/Volumes/Shared/departments/CONSERVATION/ARTWORK FILES"
+Path to the Time-based Media Artworks directory on the TBMA DroBo,"/Volumes/TBMA Drobo/Time Based Media Artwork/"
+```
+
+The conservator does not need to specify the artist's name, because start_input.sh will be able to infer that information from the artwork file. If there were only one artwork in the artwork file, start_input.sh could infer the accession number as well.
+
+Since the accession number does not yet exist, the conservator uses "00.00" as a placeholder. 
+
+With this information filled in, the conservator saves the csv as `input.csv`  
+
+The attached external hard drive contains several files that are not artwork, an exhibition copy that is not in a directory, and the preservation copy, the dpx sequence, which is stored in a directory by itself. The conservator chooses to prioritize moving the preservation copy. They choose to select an individual directory.
+
+Because the conservator is only moving a directory full of dpx files, they do not choose to run all of the metadata tools. 
+
+The art conservator opens the output_template.csv file stored in `INPT/csv_templates/` 
+
+```
+Move all files to staging directory,0
+Select files to move to staging directory,1
+Run all tools,0
+Run tree on volume,1
+Run siegfried on files in staging directory,0
+Run MediaInfo on video files in staging directory,0
+Run Exiftool on media files in staging directory,0
+Create framdemd5 output for video files in staging directory,0
+Create QCTools reports for video files in staging directory,0
+```
+
+They choose to run tree, to document the directory structure of the volume.    
+They choose not to run siegfried, because all of the file types are the same. Running sigfried on a large set of files that are all the same type is redundant, the output would be the same for each.     
+The conservator also chooses not to run MediaInfo or Exiftool for the same reason, the output for each of the dpx files would be the same, and there are many dpx files in a sequence.     
+Ffmpeg’s frame md5 function and QCTools are only for audio and video files, but to avoid any complications, the conservator chooses not to run these either. 
+
+With these selections filled in, the conservator saves the csv as `output.csv`  
+
+Running start_input.sh with these two csv files provided as input will result in identifying the artwork file, creating the staging directory, creating a checksum manifest of the directory containing the dpx sequence, transferring the directory to the staging directory, performing a fixity check, running "tree" on the external hard drive, and finally copying the checksum manifest and the "tree" output to the artwork file.    
+The conservator can process the exhibition copy later using start_output.sh (as described in Use Case 3).
+
+The conservator provides the filled out csv files to start_input.sh like this:    
+`./start_input.sh input.csv output.csv`
+
+start_input.sh will output it's actions to terminal and to the log file as it identifies variables from the input.csv or from inference. 
+
+When the script attempts to identify the “Condition_Tmt Reports” directory and the “Technical Info_Specs” directory, because the artwork file only stores preliminary information about the artwork, the directories do not match the expected structure. 
 
 ```
 *************************************************
@@ -642,12 +697,12 @@ Cannot find Condition_Tmt Reports directory
  See directories listed below 
 
 
-/Users/eddy/Desktop/McTest,\ Tess
-└── time-based\ media
+/path/to/artwork_files/McTest, Tess
+└── time-based media
     └── 00.00_Untitled
-        ├── Acquisition\ and\ Registration
-        ├── Artist\ Interaction
-        ├── Photo-Video\ Documentation
+        ├── Acquisition and Registration
+        ├── Artist Interaction
+        ├── Photo-Video Documentation
         ├── Research
         │   └── Correspondence
         └── Trash
@@ -668,23 +723,37 @@ Cannot find Condition_Tmt Reports directory
 2) Enter path to parent directory
 ```
 
-As shown in the example above, the script produces a tree output of the Artwork File, showing the existing directories. Next, the script prompts the conservator to enter a path to an existing directory (option 2), or simply use the parent directory of the Artwork File (option 1). For expedience sake, the conservator chooses to use the parent directory of the artwork file, and plans to place the resulting metadata files in the correct directories later. 
+As shown in the example above, the script produces a tree output of the artwork file, showing the existing directories. The conservator is prompted to enter a path to an existing directory (option 2), or simply use the parent directory of the artwork file (option 1). For expedience sake, the conservator chooses to use the parent directory of the artwork file, and plans to place the resulting metadata files in the correct directories later. 
 
-If the conservator had more time, they could choose to create a new directory to act as the “Condition_Tmt Report” directory, and then drag and drop the directory into terminal (or type it in using tab complete to avoid typos). 
+If the conservator had more time, they could choose to create a new directory to act as the “Condition_Tmt Report” directory, and then drag and drop the directory into terminal. 
 
-The Artwork File does not have a “Technical Info_Specs” directory either, so the conservator goes through the same process, once again selecting the parent directory.
+The artwork file does not have a “Technical Info_Specs” directory either, so the conservator goes through the same process, once again selecting the parent directory.
 
-With the “Condition_Tmt Report” directory and the “Technical Info_Specs” directory now identified, the script will...
+With the “Condition_Tmt Report” directory and the “Technical Info_Specs” directory now identified, start_input.sh will seamlessly transition to start_output.sh. 
+
+The conservator is then prompted to choose whether to transfer all of the files on the external hard drive to the Staging Directory, to choose specific files, or specific directories. 
+
+Following the instructions displayed in terminal, the conservator chooses the preservation copy directory containing the dpx sequence, and then confirms their selection by pressing enter. 
+
+Because all other selections have been made via the output.csv, no further action is required. start_output.sh will proceed in creating a checksum manifest of the directory containing the dpx sequence, transferring the directory to the staging directory, performing a fixity check, running "tree" on the external hard drive, and finally copying the checksum manifest and the "tree" output to the artwork file.  
 
 
-# Use Case 3
+## Use Case 3
 
-While transferring files from an artist provided hard drive, a conservator prioritizes transferring the highest quality copies provided, which are all stored in one directory. The files are fully processed with the HMSG_auto scripts and uploaded into DAMS. Later, the conservator decides to transfer the artist-provided exhibition copies off of the hard drive as well. They run ./make_vars.sh, and, when prompted, drag and drop the existing artwork folder in to terminal. The make_vars.sh script sources the staging directory location, volume name, and other relevant variables from the .varfile file. After selecting the option to move additional files from the volume to the staging directory, the move_files.sh script automatically runs. 
+While transferring files from an artist provided hard drive, a conservator prioritizes transferring the highest quality copies provided, which are all stored in one directory. The files are fully processed with the INPT and eventually uploaded into SI DAMS. Later, the conservator decides to transfer the artist-provided exhibition copies off of the hard drive as well.    
+
+They run ./make_vars.sh, and, when prompted, drag and drop the existing artwork folder in to terminal. The make_vars.sh script sources the staging directory location, volume name, and other relevant variables from the .varfile file. After selecting the option to move additional files from the volume to the staging directory, the move_files.sh script automatically runs. 
+
 The conservator selects the directory on the volume that contains the exhibition files from the list of directories provided in terminal by the move_files.sh script. The script copies the files to the staging directory. 
-The conservator is then prompted to decide whether to run metadata tools on all of the files in the staging directory. However, the high quality copies of the files are still in the staging directory from the original transfer. Because those high quality files are already in DAMS, the conservator opts to delete the high quality files in the staging directory, and then selects the option in terminal to run metadata tools. This transitions to the meta_file.sh script, which will provide a list of tools for the user to opt to run on the files in the staging directory. The result will be metadata describing the exhibition copies being added to the artwork folder, as well as stored in sidecars in the staging directory.
+The conservator is then prompted to decide whether to run metadata tools on all of the files in the staging directory. 
+
+However, the high quality copies of the files are still in the staging directory from the original transfer. Because those high quality files are already in DAMS, the conservator opts to delete the high quality files in the staging directory, and then selects the option in terminal to run metadata tools. This transitions to the meta_file.sh script, which will provide a list of tools for the user to opt to run on the files in the staging directory. The result will be metadata describing the exhibition copies being added to the artwork folder, as well as stored in sidecars in the staging directory.
 
 
 # Code Structure
+
+As described throughout this documentation most functions of INPT are run from start_input.sh or start_output.sh.    
+Those scripts reference functions stored in separate files. The functions are divided across files mostly for clarities sake, but also to simplify updating individual aspects of the code. 
 
 ```
 INPT
