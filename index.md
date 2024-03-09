@@ -107,7 +107,15 @@ Similarly, both an input.csv and an output.csv can be provided to start_input.sh
 
 # Usage: Start Input  
 
-screen recordings of using INPT
+<div style="padding:75% 0 0 0;position:relative;">
+  <iframe src="https://player.vimeo.com/video/921551540?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="start_input_manual_walkthrough"></iframe>
+</div>
+<script src="https://player.vimeo.com/api/player.js"></script>
+
+<div style="padding:75% 0 0 0;position:relative;">
+  <iframe src="https://player.vimeo.com/video/921553466?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="start_input_csv_walkthrough"></iframe>
+</div>
+<script src="https://player.vimeo.com/api/player.js"></script>
 
 ```
 ./start_input [options] [optional input.csv] [optional output.csv]
