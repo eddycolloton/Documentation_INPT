@@ -208,7 +208,7 @@ Options:
 	Display this text.
 --stop, -s
 	Stop process after start_input.sh, do not proceed to start_output.sh
---typos, -t
+--typo, -t
 	Confirm manually input text
 ```
 
@@ -603,30 +603,30 @@ At any time, you can update INPT by running
 
 A multi-channel video artwork is acquired by the museum. It is the first artwork by this artist that the Hirshhorn has acquired. The acquisition has been fully processed by the registrar, so the work is now in TMS and has an accession number. There is no conservation artwork file on the T:\ drive yet. 
 
-The artist provides an external hard drive containing only preservation and exhibition copies of their artwork as video files. The preservation copies are in one directory, the exhibition copies are in another. 
+The artist provides an external hard drive containing only preservation and exhibition copies of their artwork as video files.
 
 Once the external hard drive is connected to the computer in the TBMA Lab via a read/write blocker, the conservator views the drive and its contents in Finder. The conservator verifies that the drive only contains the expected preservation and exhibition copies. Next, the conservator runs the start_input.sh script in terminal. When prompted, the conservator opts to create an artwork folder using the script. The conservator manually enters the artist’s first and last name, the artwork's accession number, and the artwork’s title. With this information, the script creates an Artwork Folder on the T:\ drive. 
 
-The conservator also opts to create a Staging Directory on the TBMA DroBo, where the video files will be stored prior to upload to the SI DAMS. The script uses the previously entered information, the artist’s name and the accession number, to automatically creates a Staging Directory on the TBMA DroBo, following the HMSG media conservation file naming conventions. 
+The conservator also opts to create a staging directory on the TBMA DroBo, where the video files will be stored prior to upload to the SI DAMS. Using the previously entered information the staging directory on the TBMA DroBo is created following the HMSG media conservation file naming conventions. 
 
 The conservator manually enters the path to the hard drive when prompted. For this drive, the volume path is simply:    
 “/Volumes/Untitled”
 
-With this information entered into the computer, the script will search the newly created artwork file on the T:\ drive and verify that the “Condition_Tmt Reports” directory and the “Technical Info_Specs” directory can be found. Metadata files will be out to these two locations, so it is important to verify that they can be found.
+With this information entered into the computer, the script will search the newly created artwork file on the T:\ drive and verify that the “Condition_Tmt Reports” directory and the “Technical Info_Specs” directory can be found. Metadata files will be out to these two locations.
 
 The start_output.sh script will now prompt the conservator to decide whether to copy all of the files from the external hard drive to the staging directory on the TBMA DroBo, or only certain files or directories. Since the only media on the external drive are artist provided preservation and exhibition files, the conservator chooses to copy all of the files to the staging directory. The script saves this choice, but does not yet copy the files. Instead, it follows the first prompt with a series of follow up questions. 
 
 Next the script asks the conservator whether they would like to run a series of metadata tools (tree, siegfried, MediaInfo, Exiftool, framemd5, and qctools) on all of the files copied to the staging directory. Again, because the files are all artist provided preservation and exhibition copies, the conservator chooses to run all of the tools on these files. 
 
-This prompt notes that, because the conservator is selecting the “yes” option, this will be the final prompt. Once the conservator chooses the “yes” option, the script will first confirm begin to run the metadata tools. Because the conservator has chosen to run all of the metadata tools, this process will take some time (especially if the files are large).
+This prompt notes that, because the conservator is selecting the “yes” option, this will be the final prompt. Once the conservator chooses the “yes” option, the script will begin to run the metadata tools. Because the conservator has chosen to run all of the metadata tools, this process will take some time (especially if the files are large).
 
-The script will begin by creating md5 checksums of the files on the hard drive. Next the files will be copied to the Staging Directory. Once there, md5 checksums will be created again. The checksums will be compared by the script in order to confirm that no loss or errors have occurred. 
+The script will begin by creating md5 checksums of the files on the hard drive. Next the files will be copied to the staging directory. Once there, md5 checksums will be created again. The checksums will be compared in order to confirm that no loss or errors have occurred. 
 
-The file format identification tool siegfried will provide the PRONOM identification number, if applicable, for all of the files in the Staging Directory. 
+The file format identification tool siegfried will provide the PRONOM identification number, if applicable, for all of the files in the staging directory. 
 
-MediaInfo will run on all of the video files in the Staging Directory, and generate technical metadata describing each of the files individually. 
+MediaInfo will run on all of the video files in the staging directory, and generate technical metadata describing each of the files individually. 
 
-Exiftool is scripted to only run on still image files, so in this example, it will not run on any of the files on the drive. 
+Exiftool will run on still image, audio and video files, so in this example, it will run all video files on the drive. 
 
 Ffmpeg will run on each of the video files to create a “frame md5” file, a text file which lists the md5 checksum of each of the rendered frames of the video file. This granular description of the files fixity can be used to determine how much a video file has been altered in the result of a checksum collision. 
 
@@ -662,7 +662,7 @@ Since the accession number does not yet exist, the conservator uses "00.00" as a
 
 With this information filled in, the conservator saves the csv as `input.csv`  
 
-The attached external hard drive contains several files that are not artwork, an exhibition copy that is not in a directory, and the preservation copy, the dpx sequence, which is stored in a directory by itself. The conservator chooses to prioritize moving the preservation copy. They choose to select an individual directory.
+The attached external hard drive contains several files that are not artwork, an exhibition copy that is not in a directory, and the preservation copy, the dpx sequence, which is stored in a directory by itself. The conservator chooses to prioritize moving the preservation copy. They choose to select an individual directory to move to the staging directory.
 
 Because the conservator is only moving a directory full of dpx files, they do not choose to run all of the metadata tools. 
 
@@ -727,7 +727,7 @@ Cannot find Condition_Tmt Reports directory
             (__)\       )\/\
                 ||----w |
                 ||     ||
-1) /Users/eddy/Desktop/McTest, Tess  3) Quit
+1) /path/to/artwork_files/McTest, Tess  3) Quit
 2) Enter path to parent directory
 ```
 
@@ -739,7 +739,7 @@ The artwork file does not have a “Technical Info_Specs” directory either, so
 
 With the “Condition_Tmt Report” directory and the “Technical Info_Specs” directory now identified, start_input.sh will seamlessly transition to start_output.sh. 
 
-The conservator is then prompted to choose whether to transfer all of the files on the external hard drive to the Staging Directory, to choose specific files, or specific directories. 
+The conservator is then prompted to choose whether to transfer all of the files on the external hard drive to the staging directory, to choose specific files, or specific directories. 
 
 Following the instructions displayed in terminal, the conservator chooses the preservation copy directory containing the dpx sequence, and then confirms their selection by pressing enter. 
 
@@ -748,15 +748,94 @@ Because all other selections have been made via the output.csv, no further actio
 
 ## Use Case 3
 
-While transferring files from an artist provided hard drive, a conservator prioritizes transferring the highest quality copies provided, which are all stored in one directory. The files are fully processed with the INPT and eventually uploaded into SI DAMS. Later, the conservator decides to transfer the artist-provided exhibition copies off of the hard drive as well.    
+While transferring files from an artist provided hard drive, a conservator prioritizes transferring the highest quality copies provided, which are all stored in one directory. The files are fully processed with INPT and eventually uploaded into SI DAMS. Later, the conservator decides to transfer the artist-provided exhibition copy off of the hard drive as well.
 
-They run ./make_vars.sh, and, when prompted, drag and drop the existing artwork folder in to terminal. The make_vars.sh script sources the staging directory location, volume name, and other relevant variables from the .varfile file. After selecting the option to move additional files from the volume to the staging directory, the move_files.sh script automatically runs. 
+The conservator locates the artwork file created when the preservation copy was processed. Inside the “Technical Info_Specs” directory there is a csv file created by INPT:
+`McTest_00.00_2024-03-08-11.57.57.csv`
 
-The conservator selects the directory on the volume that contains the exhibition files from the list of directories provided in terminal by the move_files.sh script. The script copies the files to the staging directory. 
-The conservator is then prompted to decide whether to run metadata tools on all of the files in the staging directory. 
+The INPT created csv file contains all of the information collected by start_input.sh (artist's name, accession number, artwork file path, staging directory path, etc.). With this information collected, the conservator can skip running start_input.sh and move straight to start_output.sh.
 
-However, the high quality copies of the files are still in the staging directory from the original transfer. Because those high quality files are already in DAMS, the conservator opts to delete the high quality files in the staging directory, and then selects the option in terminal to run metadata tools. This transitions to the meta_file.sh script, which will provide a list of tools for the user to opt to run on the files in the staging directory. The result will be metadata describing the exhibition copies being added to the artwork folder, as well as stored in sidecars in the staging directory.
+The conservator then creates an output csv, choosing to select individual files to copy to the staging directory, and to run all metadata tools.
+```
+Move all files to staging directory,0
+Select files to move to staging directory,1
+Run all tools,1
+Run tree on volume,0
+Run siegfried on files in staging directory,0
+Run MediaInfo on video files in staging directory,0
+Run Exiftool on media files in staging directory,0
+Create framdemd5 output for video files in staging directory,0
+Create QCTools reports for video files in staging directory,0
+```
 
+However, the high quality copies of the files are still in the staging directory from the original transfer. INPT will run metadata tools on all files in the staging directory. Because those high quality files are already in DAMS, the conservator opts to delete the high quality files in the staging directory. This way the tools will only run on the files being transferred during this process.
+
+The conservator provides the filled out csv files to start_output.sh like this:    
+`./start_output.sh input.csv output.csv`
+
+start_output.sh sources the staging directory location, volume name, and other relevant variables from the input csv file. The artwork file is searched for checksum manifests.
+
+If an existing manifest is found, the previously transferred files are presented in a terminal prompt:
+```
+ _________________________________________ 
+/ Checksum manifest found in Artwork      \
+| File! Checksums from the following      |
+| files were found in                     |
+| /Volumes/Shared/departments/            |
+| CONSERVATION/ARTWORK FILES/McTest,      |
+| Test/time-based                         |
+| media/00.00_Title/Technical             |
+\ Info_Specs:                             /
+ ----------------------------------------- 
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+some_dir/preservation_copy.mov
+
+Copy all files from the volume to the staging directory?
+1) yes				 3) no, specific files
+2) no, only certain directories	 4) none
+#? 
+```
+
+The conservator chooses option 3, and selects the single exhibition video file from the external hard drive. 
+```
+_________________________________________ 
+/ Select individual files from the list   \
+| below, one at a time. Type the          |
+| corresponding number and press enter to |
+| select one. Repeat as necessary. Once   |
+| all the directories have been selected, |
+\ press enter again.                      /
+ ----------------------------------------- 
+        \   ^__^
+         \  (**)\_______
+            (__)\       )\/\
+             U  ||----w |
+                ||     ||
+Avaliable options:
+  1 ) /Volumes/external_hard_drive/some_dir/preservation_copy.mov
+  2 ) /Volumes/external_hard_drive/exhibition_copy.mov
+  3 ) /Volumes/external_hard_drive/installation_instructions.pdf
+  4 ) /Volumes/external_hard_drive/still_image1.tiff
+  5 ) /Volumes/external_hard_drive/still_image2.tiff
+Check an option (again to uncheck, ENTER when done):
+      2
+Avaliable options:
+  1 ) /Volumes/external_hard_drive/some_dir/preservation_copy.mov
+  2+) /Volumes/external_hard_drive/exhibition_copy.mov
+  3 ) /Volumes/external_hard_drive/installation_instructions.pdf
+  4 ) /Volumes/external_hard_drive/still_image1.tiff
+  5 ) /Volumes/external_hard_drive/still_image2.tiff
+Check an option (again to uncheck, ENTER when done):
+
+2024-03-10 - 10.25.40 - The selected files are: /Volumes/external_hard_drive/exhibition_copy.mov
+
+```
+
+With the file selected and the "Run all tools" option selected in the output.csv file, the script will run the rest of the process automatically. The result will be the exhibition copy transferred from the external hard drive to the staging directory, fixity verified, and metadata describing the exhibition copy being created, added to the artwork folder, and stored in sidecars in the staging directory.
 
 # Code Structure
 
@@ -784,7 +863,6 @@ INPT
 │   └── start_output.sh
 ├── README.md
 ├── Roadmap.md
-├── acronym_brainstorming.txt
 ├── csv_templates
 │   ├── input_template.csv
 │   └── output_template.csv
@@ -798,111 +876,186 @@ INPT
 ├── sample_files
 └── tests
 ```
+Functions stored in start_input.sh and start_output.sh are typically preceeded by a `source` command which retrieves the function from the ".sh" file the function is stored in.
 
-## Header 2
+For example:
+```shell
+source "${script_dir}"/input_functions/makelog.sh
+MakeLog
+```
+This code "sources" the `MakeLog` function from INPT/input_functions/makelog.sh
 
-> This is a blockquote following a header.
->
-> When something is important enough, you do it even if the odds are not in your favor.
+To troubleshoot or examine a particular function, first look at the code in start_input.sh or start_outpt.sh to locate the file the function is stored in. Bear in mind that the function may reference other functions.
 
-### Header 3
+Which functions are run is predominently determined by "if this, then that" logic, conditional on known variables (or user selections). 
 
-```js
-// Javascript code with syntax highlighting.
-var fun = function lang(l) {
-  dateformat.i18n = require('./lang/' + l)
-  return true;
-}
+For example:
+```shell
+if [[ -n "${input_csv}" ]] ; then
+# if input_csv has been assigned, then
+    if [[ -n "${ArtFile}" ]] && [[ -z "${ArtistLastName}" ]] ; then
+    # if artwork file has been assigned, but artist's name is unknown
+        source "${script_dir}"/input_functions/finddirs.sh
+        ParseArtFile "${ArtFile}"
+        # parse artwork file path for artist first and last name
+        FindAccessionNumber 
+        # parse artwork file for accession
+    fi
+    if [[ -z "${ArtistLastName}" ]] ; then
+    # if artist's name has not been assigned, then:
+        source "${script_dir}"/input_functions/finddirs.sh
+        if [[ "$typo_check" == true ]] ; then
+            name_again=yes
+            ConfirmArtistsName
+        else
+            InputArtistsName
+        fi
+    elif [[ -n "${ArtistLastName}" ]] && [[ -z "${ArtFile}" ]]; then
+    # if the artist's last name is known and the Artwork File path is still unknown, then assume artist's name is from csv
+        logNewLine "Artist name found in CSV: ${ArtistFirstName} ${ArtistLastName}" "$WHITE"
+        # consider adding a check here. If artist's name doesn't match any in artwork folders then confirm? Use different artist name database?
+    fi
+else
+    source "${script_dir}"/input_functions/finddirs.sh
+    if [[ "$typo_check" == true ]] ; then
+        name_again=yes
+        ConfirmArtistsName
+    else
+        InputArtistsName
+    fi
+fi
+...
 ```
 
-```ruby
-# Ruby code with syntax highlighting
-GitHubPages::Dependencies.gems.each do |gem, version|
-  s.add_dependency(gem, "= #{version}")
-end
-```
+In the code segment above, the artwork file and the artist's name are identified.
 
-#### Header 4
+If the input csv is "non-zero", `if [[ -n "${input_csv}" ]] ; then`     
 
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
+and the artwork file path is also non-zero, but the artist's last name is not known, `if [[ -n "${ArtFile}" ]] && [[ -z "${ArtistLastName}" ]] ; then`    
 
-##### Header 5
+then the artwork file was provided by the csv but not the artist's name. So the artwork file will be parsed to infer the artist's name.
 
-1.  This is an ordered list following a header.
-2.  This is an ordered list following a header.
-3.  This is an ordered list following a header.
+If the artwork file is not known, and the artist's last name is not known `if [[ -z "${ArtistLastName}" ]] ; then`
 
-###### Header 6
+then the artist's name was not provided by in the input csv and so the user will be prompted to input it.   
 
-| head1        | head two          | three |
-|:-------------|:------------------|:------|
-| ok           | good swedish fish | nice  |
-| out of stock | good and plenty   | nice  |
-| ok           | good `oreos`      | hmm   |
-| ok           | good `zoute` drop | yumm  |
+If the artist's last name is known, then it was read from the input csv file.    
 
-### There's a horizontal rule below this.
+Finally if the input csv is not known, then the artist's name must be manually input, so the user will be prompted to input it. 
 
+In this way, start_input and start_output rely on determining what necessary information has not yet been found, and prompting the user for inputs or selections where necessary.
 * * *
 
-### Here is an unordered list:
+Similair, repetative code is streamlined through functions as well. 
 
-*   Item foo
-*   Item bar
-*   Item baz
-*   Item zip
-
-### And an ordered list:
-
-1.  Item one
-1.  Item two
-1.  Item three
-1.  Item four
-
-### And a nested list:
-
-- level 1 item
-  - level 2 item
-  - level 2 item
-    - level 3 item
-    - level 3 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-
-### Small image
-
-![Octocat](https://github.githubassets.com/images/icons/emoji/octocat.png)
-
-### Large image
-
-![Branching](https://guides.github.com/activities/hello-world/branching.png)
-
-
-### Definition lists can be used with HTML syntax.
-
-<dl>
-<dt>Name</dt>
-<dd>Godzilla</dd>
-<dt>Born</dt>
-<dd>1952</dd>
-<dt>Birthplace</dt>
-<dd>Japan</dd>
-<dt>Color</dt>
-<dd>Green</dd>
-</dl>
-
+For example:
+```shell
+ConfirmInput () {
+  local var="$1"
+	local var_display_name="$2"
+	local prompt_context="$3"
+  
+  select_again=yes
+	
+  while [[ "$select_again" = yes ]] ; do
+		echo -e "\nManually input the ${var_display_name}"
+        if [[ ! -z "$prompt_context" ]] ; then
+        # Optional additional argument to provide context on prompt for input
+            echo "$prompt_context"
+			## vars w/ spaces passed to prompt_context not displaying correctly! 
+        fi
+		read -e user_input
+        # Read user input as variable $user_input
+        user_input="${user_input%"${user_input##*[![:space:]]}"}"
+        # If the user_input path is dragged and dropped into terminal, the trailing whitespace can eventually be interpreted as a "\" which breaks the CLI tools.
+		logNewLine "The ${var_display_name} manually input: ${user_input}" "$CYAN"
+        if [[ "$typo_check" == true ]] ; then
+        # If typo check option is turned on, then confirm user_input
+            cowsay "Just checking for typos - Is the ${var_display_name} entered correctly?"
+            select options in "yes" "no, go back a step"; do
+                case $options in
+                    yes)
+                        select_again=no
+                        break;;
+                    "no, go back a step")
+                        select_again=yes
+                        unset user_input
+                        break;;
+                esac
+            done
+            if [[ "$select_again" = yes ]] ;
+                    then echo -e "Let's try again"
+            fi
+        else
+            select_again=no
+        fi
+	eval "${var}=\${user_input}"
+	export var="${var}"
+	done
+}
 ```
-Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this.
+The `ConfirmInput` function above is used several times in the finddis.sh script to confirm manually input variables and assign them accordingly:
+```shell
+while [[ -z "$accession" ]] ; do
+		ConfirmInput accession "artwork's accession number" "For new acquisitions, enter accession number in '####.###' format"
+		export accession="${accession}"
+	done
+	while [[ -z "$title" ]] ; do
+    	ConfirmInput title "artwork's title"
+		export title="${title}"
+	done
+```
+In the example above `ConfirmInput` is used to collect the $accession and $title variables (if they are unknown).
+* * *
+INPT uses code from several open source projects. 
+
+A large portion of INPT/input_functions/makelog.sh is lifted from the [AMIA Open Source project loglog](https://github.com/amiaopensource/loglog)
+
+Transfer of either an entire volume or selected driectories use INPT/output_functions/move/copyit.py 
+
+This file is a slightly modifed version of the copyit.py file created by Kieran O'Leary as part of the IFIscript project: https://github.com/kieranjol/IFIscripts
+
+Copyright notices are stored in the INPT code files referenced above, and reproduced here:
+IFIscripts:
+```
+    MIT License
+
+    Copyright (c) 2015-2018 Kieran O'Leary for the Irish Film Institute.
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    THE SOFTWARE.
 ```
 
+loglog:
 ```
-The final element.
+    Copyright (C) 2021  Eddy Colloton and Morgan Morel
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```
+* * *
