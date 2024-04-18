@@ -294,6 +294,15 @@ At the time of writing the path to the artwork file was: `/Volumes/Shared/depart
 At the time of writing the path to the time-based media artworks directory on the DroBo was: `/Volumes/TBMA DroBo/Time-based Media Artworks/`
 
 # Usage: Start Output  
+<div style="padding:75% 0 0 0;position:relative;">
+  <iframe src="https://player.vimeo.com/video/936446837?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="start_output_manual_walkthrough"></iframe>
+</div>
+<script src="https://player.vimeo.com/api/player.js"></script>
+
+<div style="padding:75% 0 0 0;position:relative;">
+  <iframe src="https://player.vimeo.com/video/936446570?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="start_output_csv_walkthrough"></iframe>
+</div>
+<script src="https://player.vimeo.com/api/player.js"></script>
 ```
 ./start_output [optional input.csv] [optional output.csv]
 ```
