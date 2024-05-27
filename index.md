@@ -7,7 +7,7 @@ layout: default
 INPT takes media files as input, typically from an external hard drive, and outputs metadata files according to the HMSG directory structure and naming conventions.
 * * *
 ## Contents
-- [Introduciton](#introduction)
+- [Introduction](#introduction)
   - [HMSG Workflow](#hmsg-workflow)
   - [INPUTS](#inputs)
   - [OUTPUTS](#outputs)
@@ -409,14 +409,14 @@ You'll then be able to select each file/directory you want to transfer, one at a
             (__)\       )\/\
              U  ||----w |
                 ||     ||
-Avaliable options:
+Available options:
   1 ) /Volumes/Artwork/instructions.pdf
   2 ) /Volumes/Artwork/smpte_bars_prores_ch1.mov
   3 ) /Volumes/Artwork/smpte_bars_prores_ch3.mov
   4 ) /Volumes/Artwork/smpte_bars_prores_ch2.mov
 Check an option (again to uncheck, ENTER when done): 
 2
-Avaliable options:
+Available options:
   1 ) /Volumes/Artwork/instructions.pdf
   2+) /Volumes/Artwork/smpte_bars_prores_ch1.mov
   3 ) /Volumes/Artwork/smpte_bars_prores_ch3.mov
@@ -424,7 +424,7 @@ Avaliable options:
 /Volumes/Artwork/smpte_bars_prores_ch1.mov was checked
 Check an option (again to uncheck, ENTER when done): 
 3
-Avaliable options:
+Available options:
   1 ) /Volumes/Artwork/instructions.pdf
   2+) /Volumes/Artwork/smpte_bars_prores_ch1.mov
   3+) /Volumes/Artwork/smpte_bars_prores_ch3.mov
