@@ -946,7 +946,7 @@ then the artwork file was provided by the csv but not the artist's name. So the 
 
 If the artwork file is not known, and the artist's last name is not known `if [[ -z "${ArtistLastName}" ]] ; then`
 
-then the artist's name was not provided by in the input csv and so the user will be prompted to input it.   
+then the artist's name was not provided in the input csv and so the user will be prompted to input it.   
 
 If the artist's last name is known, then it was read from the input csv file.    
 
@@ -1003,7 +1003,7 @@ ConfirmInput () {
 	done
 }
 ```
-The `ConfirmInput` function above is used several times in the finddis.sh script to confirm manually input variables and assign them accordingly:
+The `ConfirmInput` function above is used several times in the finddirs.sh script to confirm manually input variables and assign them accordingly:
 ```shell
 while [[ -z "$accession" ]] ; do
 		ConfirmInput accession "artwork's accession number" "For new acquisitions, enter accession number in '####.###' format"
